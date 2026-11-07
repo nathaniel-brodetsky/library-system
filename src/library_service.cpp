@@ -35,6 +35,29 @@ BorrowReceipt LibraryService::borrowBook(ReaderId readerId, CopyId copyId, Date 
     return {BorrowResult::Issued, transactionId, dueDate};
 }
 
+ReturnReceipt LibraryService::returnBook(ReaderId readerId, CopyId copyId, Date returnDate,
+                                         BookCondition condition) {
+    if (!readers_.contains(readerId)) {
+        return {ReturnOutcome::ReaderNotRegistered, {}};
+    }
+    BookCopy* copy = copies_.find(copyId);
+    if (copy == nullptr) {
+        return {ReturnOutcome::CopyNotFound, {}};
+    }
+    Transaction* loan = transactions_.findOpen(readerId, copyId);
+    if (loan == nullptr) {
+        return {ReturnOutcome::NoActiveLoan, {}};
+    }
+    if (returnDate < loan->issueDate()) {
+        return {ReturnOutcome::InvalidReturnDate, {}};
+    }
+
+    const FineBreakdown fine = FinePolicy::calculateFine(loan->dueDate(), returnDate, condition);
+    loan->close(returnDate);
+    copy->setStatus(condition == BookCondition::Damaged ? BookStatus::Maintenance : BookStatus::Available);
+    return {ReturnOutcome::Returned, fine};
+}
+
 BorrowResult LibraryService::checkBorrowEligibility(ReaderId readerId, CopyId copyId, Date currentDate) const {
     if (!readers_.contains(readerId)) {
         return BorrowResult::ReaderNotRegistered;

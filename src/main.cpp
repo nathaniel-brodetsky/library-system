@@ -45,5 +45,9 @@ int main() {
     report(service.borrowBook(1, 101, today));
     report(service.borrowBook(1, 101, today));
     report(service.borrowBook(7, 101, today));
+
+    const ReturnReceipt receipt = service.returnBook(1, 101, addDays(today, 25));
+    std::cout << "Повернення: прострочено " << receipt.fine.overdueDays << " дн., штраф " << receipt.fine.total()
+              << " грн\n";
     return 0;
 }
