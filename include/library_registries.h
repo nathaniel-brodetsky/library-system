@@ -58,9 +58,9 @@ public:
         std::vector<Transaction> active;
         for (int i = 0; i < (int)transactions.size(); i++) {
             if (transactions[i].readerId == readerId) {
-                if (transactions[i].status == "активна") {
+                if (transactions[i].status == TransactionStatus::Active) {
                     active.push_back(transactions[i]);
-                } else if (transactions[i].status == "повернена") {
+                } else if (transactions[i].status == TransactionStatus::Closed) {
                 }
             }
         }

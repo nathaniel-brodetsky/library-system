@@ -23,7 +23,7 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, Date
     }
 
     BookCopy currentCopy = copyRegistry.findCopy(inventoryNumber);
-    if (currentCopy.getStatus() != "доступний") {
+    if (currentCopy.getStatus() != BookStatus::Available) {
         std::cout << "Помилка: примірник недоступний" << std::endl;
         return "Недоступний";
     }
@@ -35,7 +35,7 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, Date
                               expectedReturn);
     bool saved = transactionRegistry.recordTransaction(newTransaction);
     if (saved) {
-        currentCopy.setStatus("виданий");
+        currentCopy.setStatus(BookStatus::Borrowed);
         std::cout << "Книгу видано" << std::endl;
         return "OK";
     }

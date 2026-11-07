@@ -2,6 +2,10 @@
 
 #include <string>
 
+enum class BookStatus { Available, Borrowed, Maintenance, Missing };
+
+enum class TransactionStatus { Active, Closed, Overdue };
+
 struct Date {
     int year;
     int month;
@@ -56,27 +60,27 @@ class BookCopy {
 public:
     int inventoryNumber;
     std::string ISBN;
-    std::string status;
+    BookStatus status;
 
     BookCopy() {
         inventoryNumber = 0;
-        status = "відсутній";
+        status = BookStatus::Missing;
     }
 
     BookCopy(int number) {
         inventoryNumber = number;
-        status = "доступний";
+        status = BookStatus::Available;
     }
 
     int getInventoryNumber() {
         return inventoryNumber;
     }
 
-    std::string getStatus() {
+    BookStatus getStatus() {
         return status;
     }
 
-    void setStatus(std::string newStatus) {
+    void setStatus(BookStatus newStatus) {
         status = newStatus;
     }
 };
@@ -88,7 +92,7 @@ public:
     int inventoryNumber;
     Date issueDate;
     Date dueDate;
-    std::string status;
+    TransactionStatus status;
 
     Transaction(int id, int reader, int number, Date issued, Date due) {
         transactionId = id;
@@ -96,7 +100,7 @@ public:
         inventoryNumber = number;
         issueDate = issued;
         dueDate = due;
-        status = "активна";
+        status = TransactionStatus::Active;
     }
 
     int getInventoryNumber() {
