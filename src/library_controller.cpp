@@ -29,7 +29,7 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, Date
     }
 
     Date expectedReturn = date;
-    expectedReturn.day = expectedReturn.day + 14;
+    expectedReturn.day = expectedReturn.day + 21;
 
     Transaction newTransaction(0, currentReader.getId(), currentCopy.getInventoryNumber(), date,
                               expectedReturn);
