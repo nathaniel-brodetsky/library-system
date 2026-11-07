@@ -56,11 +56,8 @@ public:
     std::vector<Transaction> findActiveTransactions(int readerId) const {
         std::vector<Transaction> active;
         for (const auto& transaction : transactions_) {
-            if (transaction.getReaderId() == readerId) {
-                if (transaction.getStatus() == TransactionStatus::Active) {
-                    active.push_back(transaction);
-                } else if (transaction.getStatus() == TransactionStatus::Closed) {
-                }
+            if (transaction.getReaderId() == readerId && transaction.getStatus() == TransactionStatus::Active) {
+                active.push_back(transaction);
             }
         }
         return active;
