@@ -30,3 +30,4 @@ endfunction()
 
 library_add_test_suite(test_decision_table)
 library_add_test_suite(test_cause_effect)
+library_add_test_suite(test_equivalence_boundary)
