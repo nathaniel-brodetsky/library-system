@@ -11,7 +11,7 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, cons
 
     std::vector<Transaction> active = transactionRegistry.findActiveTransactions(readerId);
     for (const auto& transaction : active) {
-        if (toDays(date) > toDays(transaction.getDueDate())) {
+        if (date > transaction.getDueDate()) {
             std::cout << "Помилка: читач має заборгованість" << std::endl;
             return "Заборгованість";
         }
@@ -28,8 +28,7 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, cons
         return "Недоступний";
     }
 
-    Date expectedReturn = date;
-    expectedReturn.day = expectedReturn.day + 21;
+    const Date expectedReturn = date + std::chrono::days{21};
 
     Transaction newTransaction(0, currentReader->getId(), currentCopy->getInventoryNumber(), date,
                               expectedReturn);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <string>
 #include <utility>
 
@@ -7,14 +8,10 @@ enum class BookStatus { Available, Borrowed, Maintenance };
 
 enum class TransactionStatus { Active, Closed, Overdue };
 
-struct Date {
-    int year;
-    int month;
-    int day;
-};
+using Date = std::chrono::sys_days;
 
-inline int toDays(const Date& date) {
-    return date.year * 365 + date.month * 30 + date.day;
+constexpr Date makeDate(int year, unsigned month, unsigned day) {
+    return Date{std::chrono::year{year} / std::chrono::month{month} / std::chrono::day{day}};
 }
 
 class Reader {
