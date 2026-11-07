@@ -4,11 +4,11 @@
 
 #include "library_registries.h"
 
-class БібліотечнийКонтролер {
+class LibraryController {
 public:
-    РеєстрЧитачів реєстрЧитачів;
-    РеєстрПримірників реєстрПримірників;
-    РеєстрТранзакцій реєстрТранзакцій;
+    ReaderRegistry readerRegistry;
+    CopyRegistry copyRegistry;
+    TransactionRegistry transactionRegistry;
 
-    std::string видатиКнигу(int idЧитача, int інвНомер, Дата дата);
+    std::string issueBook(int readerId, int inventoryNumber, Date date);
 };

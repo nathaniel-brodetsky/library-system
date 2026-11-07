@@ -2,104 +2,104 @@
 
 #include <string>
 
-struct Дата {
-    int рік;
-    int місяць;
-    int день;
+struct Date {
+    int year;
+    int month;
+    int day;
 };
 
-inline int вДні(Дата дата) {
-    return дата.рік * 365 + дата.місяць * 30 + дата.день;
+inline int toDays(Date date) {
+    return date.year * 365 + date.month * 30 + date.day;
 }
 
-class Читач {
+class Reader {
 public:
-    int id_читача;
-    std::string ПІБ;
+    int readerId;
+    std::string fullName;
     std::string email;
 
-    Читач() {
-        id_читача = 0;
+    Reader() {
+        readerId = 0;
     }
 
-    Читач(int id, std::string піб, std::string пошта) {
-        id_читача = id;
-        ПІБ = піб;
-        email = пошта;
+    Reader(int id, std::string name, std::string mail) {
+        readerId = id;
+        fullName = name;
+        email = mail;
     }
 
-    int отриматиID() {
-        return id_читача;
+    int getId() {
+        return readerId;
     }
 };
 
-class Книга {
+class Book {
 public:
     std::string ISBN;
-    std::string назва;
-    std::string автор;
+    std::string title;
+    std::string author;
 
-    Книга() {}
+    Book() {}
 
-    Книга(std::string isbn, std::string назваКниги, std::string авторКниги) {
-        ISBN = isbn;
-        назва = назваКниги;
-        автор = авторКниги;
+    Book(std::string isbnCode, std::string bookTitle, std::string bookAuthor) {
+        ISBN = isbnCode;
+        title = bookTitle;
+        author = bookAuthor;
     }
 
-    std::string отриматиISBN() {
+    std::string getIsbn() {
         return ISBN;
     }
 };
 
-class ПримірникКниги {
+class BookCopy {
 public:
-    int інвентарний_номер;
+    int inventoryNumber;
     std::string ISBN;
-    std::string статус;
+    std::string status;
 
-    ПримірникКниги() {
-        інвентарний_номер = 0;
-        статус = "відсутній";
+    BookCopy() {
+        inventoryNumber = 0;
+        status = "відсутній";
     }
 
-    ПримірникКниги(int номер) {
-        інвентарний_номер = номер;
-        статус = "доступний";
+    BookCopy(int number) {
+        inventoryNumber = number;
+        status = "доступний";
     }
 
-    int отриматиІнвНомер() {
-        return інвентарний_номер;
+    int getInventoryNumber() {
+        return inventoryNumber;
     }
 
-    std::string отриматиСтатус() {
-        return статус;
+    std::string getStatus() {
+        return status;
     }
 
-    void встановитиСтатус(std::string новийСтатус) {
-        статус = новийСтатус;
+    void setStatus(std::string newStatus) {
+        status = newStatus;
     }
 };
 
-class Транзакція {
+class Transaction {
 public:
-    int id_транзакції;
-    int id_читача;
-    int інв_номер;
-    Дата дата_видачі;
-    Дата дата_повернення_очікувана;
-    std::string статус;
+    int transactionId;
+    int readerId;
+    int inventoryNumber;
+    Date issueDate;
+    Date dueDate;
+    std::string status;
 
-    Транзакція(int id, int читач, int номер, Дата видача, Дата повернення) {
-        id_транзакції = id;
-        id_читача = читач;
-        інв_номер = номер;
-        дата_видачі = видача;
-        дата_повернення_очікувана = повернення;
-        статус = "активна";
+    Transaction(int id, int reader, int number, Date issued, Date due) {
+        transactionId = id;
+        readerId = reader;
+        inventoryNumber = number;
+        issueDate = issued;
+        dueDate = due;
+        status = "активна";
     }
 
-    int отриматиІнвНомер() {
-        return інв_номер;
+    int getInventoryNumber() {
+        return inventoryNumber;
     }
 };

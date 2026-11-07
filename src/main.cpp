@@ -3,13 +3,13 @@
 #include "library_controller.h"
 
 int main() {
-    БібліотечнийКонтролер контролер;
-    контролер.реєстрЧитачів.додатиЧитача(Читач(1, "Шевченко Тарас", "taras@example.com"));
-    контролер.реєстрПримірників.додатиПримірник(ПримірникКниги(101));
+    LibraryController controller;
+    controller.readerRegistry.addReader(Reader(1, "Шевченко Тарас", "taras@example.com"));
+    controller.copyRegistry.addCopy(BookCopy(101));
 
-    Дата сьогодні = {2025, 3, 10};
-    std::cout << контролер.видатиКнигу(1, 101, сьогодні) << std::endl;
-    std::cout << контролер.видатиКнигу(1, 101, сьогодні) << std::endl;
-    std::cout << контролер.видатиКнигу(7, 101, сьогодні) << std::endl;
+    Date today = {2025, 3, 10};
+    std::cout << controller.issueBook(1, 101, today) << std::endl;
+    std::cout << controller.issueBook(1, 101, today) << std::endl;
+    std::cout << controller.issueBook(7, 101, today) << std::endl;
     return 0;
 }
