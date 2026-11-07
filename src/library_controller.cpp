@@ -33,11 +33,8 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, cons
 
     Transaction newTransaction(0, currentReader.getId(), currentCopy.getInventoryNumber(), date,
                               expectedReturn);
-    bool saved = transactionRegistry.recordTransaction(newTransaction);
-    if (saved) {
-        currentCopy.setStatus(BookStatus::Borrowed);
-        std::cout << "Книгу видано" << std::endl;
-        return "OK";
-    }
-    return "Помилка";
+    transactionRegistry.recordTransaction(newTransaction);
+    currentCopy.setStatus(BookStatus::Borrowed);
+    std::cout << "Книгу видано" << std::endl;
+    return "OK";
 }
