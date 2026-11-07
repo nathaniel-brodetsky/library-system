@@ -8,6 +8,8 @@ enum class BookStatus { Available, Borrowed, Maintenance };
 
 enum class TransactionStatus { Active, Closed, Overdue };
 
+enum class BookCondition { Intact, Damaged };
+
 [[nodiscard]] constexpr std::string_view toString(BookStatus status) noexcept {
     switch (status) {
         case BookStatus::Available:

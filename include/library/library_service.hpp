@@ -5,6 +5,7 @@
 
 #include "library/book.hpp"
 #include "library/date.hpp"
+#include "library/fine_policy.hpp"
 #include "library/identifiers.hpp"
 #include "library/loan_policy.hpp"
 #include "library/reader.hpp"
@@ -24,6 +25,15 @@ struct BorrowReceipt {
     [[nodiscard]] bool issued() const noexcept { return result == BorrowResult::Issued; }
 };
 
+enum class ReturnOutcome { Returned, ReaderNotRegistered, CopyNotFound, NoActiveLoan, InvalidReturnDate };
+
+struct ReturnReceipt {
+    ReturnOutcome outcome;
+    FineBreakdown fine;
+
+    [[nodiscard]] bool returned() const noexcept { return outcome == ReturnOutcome::Returned; }
+};
+
 class LibraryService {
 public:
     explicit LibraryService(LoanPolicy policy = {}) noexcept : policy_(policy) {}
@@ -33,6 +43,8 @@ public:
     bool addCopy(BookCopy copy);
 
     BorrowReceipt borrowBook(ReaderId readerId, CopyId copyId, Date currentDate);
+    ReturnReceipt returnBook(ReaderId readerId, CopyId copyId, Date returnDate,
+                             BookCondition condition = BookCondition::Intact);
 
     [[nodiscard]] const LoanPolicy& policy() const noexcept { return policy_; }
     [[nodiscard]] const ReaderRegistry& readers() const noexcept { return readers_; }

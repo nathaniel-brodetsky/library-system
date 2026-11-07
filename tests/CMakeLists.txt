@@ -29,3 +29,4 @@ function(library_add_test_suite name)
 endfunction()
 
 library_add_test_suite(test_decision_table)
+library_add_test_suite(test_cause_effect)
