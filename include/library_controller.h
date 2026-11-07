@@ -10,5 +10,5 @@ public:
     CopyRegistry copyRegistry;
     TransactionRegistry transactionRegistry;
 
-    std::string issueBook(int readerId, int inventoryNumber, Date date);
+    std::string issueBook(int readerId, int inventoryNumber, const Date& date);
 };

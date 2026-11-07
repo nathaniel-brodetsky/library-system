@@ -6,64 +6,67 @@
 
 class ReaderRegistry {
 public:
-    std::vector<Reader> readers;
-
-    bool addReader(Reader reader) {
-        readers.push_back(reader);
+    bool addReader(const Reader& reader) {
+        readers_.push_back(reader);
         return true;
     }
 
-    Reader findReader(int id) {
-        for (int i = 0; i < (int)readers.size(); i++) {
-            if (readers[i].getId() == id) {
-                return readers[i];
+    Reader findReader(int id) const {
+        for (const auto& reader : readers_) {
+            if (reader.getId() == id) {
+                return reader;
             }
         }
         return Reader();
     }
+
+private:
+    std::vector<Reader> readers_;
 };
 
 class CopyRegistry {
 public:
-    std::vector<BookCopy> copies;
-
-    bool addCopy(BookCopy copy) {
-        copies.push_back(copy);
+    bool addCopy(const BookCopy& copy) {
+        copies_.push_back(copy);
         return true;
     }
 
-    BookCopy findCopy(int id) {
-        for (int i = 0; i < (int)copies.size(); i++) {
-            if (copies[i].getInventoryNumber() == id) {
-                return copies[i];
+    BookCopy findCopy(int id) const {
+        for (const auto& copy : copies_) {
+            if (copy.getInventoryNumber() == id) {
+                return copy;
             }
         }
         return BookCopy();
     }
+
+private:
+    std::vector<BookCopy> copies_;
 };
 
 class TransactionRegistry {
 public:
-    std::vector<Transaction> transactions;
-    int nextId = 1;
-
-    bool recordTransaction(Transaction tx) {
-        Transaction newTx = tx;
-        newTx.transactionId = nextId++;
-        transactions.push_back(newTx);
+    bool recordTransaction(const Transaction& transaction) {
+        Transaction stored = transaction;
+        stored.assignId(nextId_++);
+        transactions_.push_back(stored);
         return true;
     }
 
-    std::vector<Transaction> findActiveTransactions(int readerId) {
+    std::vector<Transaction> findActiveTransactions(int readerId) const {
         std::vector<Transaction> active;
-        for (int i = 0; i < (int)transactions.size(); i++) {
-            if (transactions[i].readerId == readerId) {
-                if (transactions[i].status == TransactionStatus::Active) {
-                    active.push_back(transactions[i]);
-                } else if (transactions[i].status == TransactionStatus::Closed) {
+        for (const auto& transaction : transactions_) {
+            if (transaction.getReaderId() == readerId) {
+                if (transaction.getStatus() == TransactionStatus::Active) {
+                    active.push_back(transaction);
+                } else if (transaction.getStatus() == TransactionStatus::Closed) {
                 }
             }
         }
         return active;
     }
+
+private:
+    std::vector<Transaction> transactions_;
+    int nextId_{1};
 };

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-std::string LibraryController::issueBook(int readerId, int inventoryNumber, Date date) {
+std::string LibraryController::issueBook(int readerId, int inventoryNumber, const Date& date) {
     Reader currentReader = readerRegistry.findReader(readerId);
     if (currentReader.getId() == 0) {
         std::cout << "Помилка: читач не зареєстрований" << std::endl;
@@ -10,8 +10,8 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, Date
     }
 
     std::vector<Transaction> active = transactionRegistry.findActiveTransactions(readerId);
-    for (int i = 0; i < (int)active.size(); i++) {
-        if (toDays(date) > toDays(active[i].dueDate)) {
+    for (const auto& transaction : active) {
+        if (toDays(date) > toDays(transaction.getDueDate())) {
             std::cout << "Помилка: читач має заборгованість" << std::endl;
             return "Заборгованість";
         }
