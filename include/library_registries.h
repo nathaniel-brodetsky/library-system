@@ -11,13 +11,13 @@ public:
         return true;
     }
 
-    Reader findReader(int id) const {
+    const Reader* findReader(int id) const {
         for (const auto& reader : readers_) {
             if (reader.getId() == id) {
-                return reader;
+                return &reader;
             }
         }
-        return Reader();
+        return nullptr;
     }
 
 private:
@@ -31,13 +31,13 @@ public:
         return true;
     }
 
-    BookCopy findCopy(int id) const {
-        for (const auto& copy : copies_) {
+    BookCopy* findCopy(int id) {
+        for (auto& copy : copies_) {
             if (copy.getInventoryNumber() == id) {
-                return copy;
+                return &copy;
             }
         }
-        return BookCopy();
+        return nullptr;
     }
 
 private:

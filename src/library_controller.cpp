@@ -3,8 +3,8 @@
 #include <iostream>
 
 std::string LibraryController::issueBook(int readerId, int inventoryNumber, const Date& date) {
-    Reader currentReader = readerRegistry.findReader(readerId);
-    if (currentReader.getId() == 0) {
+    const Reader* currentReader = readerRegistry.findReader(readerId);
+    if (currentReader == nullptr) {
         std::cout << "Помилка: читач не зареєстрований" << std::endl;
         return "Читач не зареєстрований";
     }
@@ -22,8 +22,8 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, cons
         return "Ліміт";
     }
 
-    BookCopy currentCopy = copyRegistry.findCopy(inventoryNumber);
-    if (currentCopy.getStatus() != BookStatus::Available) {
+    BookCopy* currentCopy = copyRegistry.findCopy(inventoryNumber);
+    if (currentCopy == nullptr || currentCopy->getStatus() != BookStatus::Available) {
         std::cout << "Помилка: примірник недоступний" << std::endl;
         return "Недоступний";
     }
@@ -31,10 +31,10 @@ std::string LibraryController::issueBook(int readerId, int inventoryNumber, cons
     Date expectedReturn = date;
     expectedReturn.day = expectedReturn.day + 21;
 
-    Transaction newTransaction(0, currentReader.getId(), currentCopy.getInventoryNumber(), date,
+    Transaction newTransaction(0, currentReader->getId(), currentCopy->getInventoryNumber(), date,
                               expectedReturn);
     transactionRegistry.recordTransaction(newTransaction);
-    currentCopy.setStatus(BookStatus::Borrowed);
+    currentCopy->setStatus(BookStatus::Borrowed);
     std::cout << "Книгу видано" << std::endl;
     return "OK";
 }

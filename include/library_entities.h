@@ -3,7 +3,7 @@
 #include <string>
 #include <utility>
 
-enum class BookStatus { Available, Borrowed, Maintenance, Missing };
+enum class BookStatus { Available, Borrowed, Maintenance };
 
 enum class TransactionStatus { Active, Closed, Overdue };
 
@@ -19,8 +19,6 @@ inline int toDays(const Date& date) {
 
 class Reader {
 public:
-    Reader() = default;
-
     Reader(int id, std::string fullName, std::string email)
         : id_(id), fullName_(std::move(fullName)), email_(std::move(email)) {}
 
@@ -29,15 +27,13 @@ public:
     const std::string& getEmail() const { return email_; }
 
 private:
-    int id_{0};
+    int id_;
     std::string fullName_;
     std::string email_;
 };
 
 class Book {
 public:
-    Book() = default;
-
     Book(std::string isbn, std::string title, std::string author)
         : isbn_(std::move(isbn)), title_(std::move(title)), author_(std::move(author)) {}
 
@@ -53,17 +49,15 @@ private:
 
 class BookCopy {
 public:
-    BookCopy() = default;
-
-    explicit BookCopy(int inventoryNumber) : inventoryNumber_(inventoryNumber), status_(BookStatus::Available) {}
+    explicit BookCopy(int inventoryNumber) : inventoryNumber_(inventoryNumber) {}
 
     int getInventoryNumber() const { return inventoryNumber_; }
     BookStatus getStatus() const { return status_; }
     void setStatus(BookStatus status) { status_ = status; }
 
 private:
-    int inventoryNumber_{0};
-    BookStatus status_{BookStatus::Missing};
+    int inventoryNumber_;
+    BookStatus status_{BookStatus::Available};
 };
 
 class Transaction {
