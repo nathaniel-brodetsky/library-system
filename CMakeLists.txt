@@ -14,6 +14,7 @@ add_library(library_core
     src/date.cpp
     src/registries.cpp
     src/library_service.cpp
+    src/reader_validator.cpp
 )
 add_library(library::core ALIAS library_core)
 target_include_directories(library_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

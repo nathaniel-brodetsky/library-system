@@ -2,10 +2,21 @@
 
 #include <utility>
 
+#include "library/reader_validator.hpp"
+
 namespace library {
 
 RegistrationResult LibraryService::registerReader(ReaderId id, std::string fullName, std::string email,
                                                   Date registrationDate) {
+    if (ReaderValidator::checkId(id) != ReaderIdValidity::Valid) {
+        return RegistrationResult::InvalidId;
+    }
+    if (ReaderValidator::isBlank(fullName)) {
+        return RegistrationResult::EmptyName;
+    }
+    if (ReaderValidator::checkEmail(email) != EmailValidity::Valid) {
+        return RegistrationResult::InvalidEmail;
+    }
     const bool added = readers_.add(Reader{id, std::move(fullName), std::move(email), registrationDate});
     return added ? RegistrationResult::Registered : RegistrationResult::DuplicateId;
 }

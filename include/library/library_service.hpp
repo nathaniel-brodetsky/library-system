@@ -13,7 +13,7 @@
 
 namespace library {
 
-enum class RegistrationResult { Registered, DuplicateId };
+enum class RegistrationResult { Registered, InvalidId, EmptyName, InvalidEmail, DuplicateId };
 
 enum class BorrowResult { Issued, ReaderNotRegistered, OverdueDebt, LoanLimitReached, CopyUnavailable };
 
