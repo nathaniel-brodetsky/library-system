@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(LIBRARY_BUILD_TESTS "Build the GoogleTest suites" ON)
 option(LIBRARY_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 add_library(library_core
@@ -34,4 +35,9 @@ add_executable(library_app src/main.cpp)
 target_link_libraries(library_app PRIVATE library::core)
 if(MSVC)
     target_compile_options(library_app PRIVATE /utf-8)
+endif()
+
+if(LIBRARY_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
