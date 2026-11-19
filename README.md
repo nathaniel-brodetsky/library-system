@@ -44,7 +44,7 @@ ctest --test-dir build --output-on-failure
 sudo dnf install -y java-21-openjdk
 curl -LO https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz
 tar xzf apache-jmeter-5.6.3.tgz -C ~
-JMETER=~/apache-jmeter-5.6.3/bin/jmeter load/run_load.sh
+JMETER=~/apache-jmeter-5.6.3/bin/jmeter PORT=8099 load/run_load.sh
 ```
 
-Скрипт по черзі запускає сервер і план `load/library_load.jmx` для 10, 50 і 100 потоків по 200 ітерацій. HTML-звіти JMeter зберігаються в `load/results/report-N`, усі результати пакуються в `load/results.tar.gz`.
+Скрипт по черзі запускає сервер і план `load/library_load.jmx` для 10, 50, 100 і 200 потоків по 1000 ітерацій (кількість примірників у фонді сервера дорівнює кількості ітерацій). HTML-звіти JMeter зберігаються в `load/results/report-N`, усі результати пакуються в `load/results.tar.gz`.
