@@ -21,15 +21,23 @@ RegistrationResult LibraryService::registerReader(ReaderId id, std::string fullN
     return added ? RegistrationResult::Registered : RegistrationResult::DuplicateId;
 }
 
-bool LibraryService::addBook(Book book) {
-    return catalog_.add(std::move(book));
+CatalogResult LibraryService::addBook(Book book, Date currentDate) {
+    const int currentYear = static_cast<int>(std::chrono::year_month_day{currentDate}.year());
+    const CatalogResult validity = BookValidator::check(book, currentYear);
+    if (validity != CatalogResult::Added) {
+        return validity;
+    }
+    return catalog_.add(std::move(book)) ? CatalogResult::Added : CatalogResult::Duplicate;
 }
 
-bool LibraryService::addCopy(BookCopy copy) {
-    if (!catalog_.contains(copy.isbn())) {
-        return false;
+CatalogResult LibraryService::addCopy(BookCopy copy) {
+    if (!BookValidator::isValidInventoryNumber(copy.inventoryNumber())) {
+        return CatalogResult::InvalidInventoryNumber;
     }
-    return copies_.add(std::move(copy));
+    if (!catalog_.contains(copy.isbn())) {
+        return CatalogResult::UnknownBook;
+    }
+    return copies_.add(std::move(copy)) ? CatalogResult::Added : CatalogResult::Duplicate;
 }
 
 BorrowReceipt LibraryService::borrowBook(ReaderId readerId, CopyId copyId, Date currentDate) {
@@ -67,6 +75,29 @@ ReturnReceipt LibraryService::returnBook(ReaderId readerId, CopyId copyId, Date 
     loan->close(returnDate);
     copy->setStatus(condition == BookCondition::Damaged ? BookStatus::Maintenance : BookStatus::Available);
     return {ReturnOutcome::Returned, fine};
+}
+
+RenewReceipt LibraryService::renewLoan(ReaderId readerId, CopyId copyId, Date currentDate) {
+    if (!readers_.contains(readerId)) {
+        return {RenewResult::ReaderNotRegistered, std::nullopt};
+    }
+    Transaction* loan = transactions_.findOpen(readerId, copyId);
+    if (loan == nullptr) {
+        return {RenewResult::NoActiveLoan, std::nullopt};
+    }
+    const int daysUntilDue = daysBetween(currentDate, loan->dueDate());
+    if (daysUntilDue < 0) {
+        return {RenewResult::Overdue, std::nullopt};
+    }
+    if (daysUntilDue > policy_.renewalWindowDays) {
+        return {RenewResult::TooEarly, std::nullopt};
+    }
+    if (loan->renewals() >= policy_.maxRenewals) {
+        return {RenewResult::RenewalLimitReached, std::nullopt};
+    }
+    const Date newDueDate = addDays(loan->dueDate(), policy_.loanPeriodDays);
+    loan->renew(newDueDate);
+    return {RenewResult::Renewed, newDueDate};
 }
 
 BorrowResult LibraryService::checkBorrowEligibility(ReaderId readerId, CopyId copyId, Date currentDate) const {

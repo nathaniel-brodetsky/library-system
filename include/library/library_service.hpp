@@ -4,6 +4,7 @@
 #include <string>
 
 #include "library/book.hpp"
+#include "library/book_validator.hpp"
 #include "library/date.hpp"
 #include "library/fine_policy.hpp"
 #include "library/identifiers.hpp"
@@ -34,17 +35,27 @@ struct ReturnReceipt {
     [[nodiscard]] bool returned() const noexcept { return outcome == ReturnOutcome::Returned; }
 };
 
+enum class RenewResult { Renewed, ReaderNotRegistered, NoActiveLoan, TooEarly, Overdue, RenewalLimitReached };
+
+struct RenewReceipt {
+    RenewResult result;
+    std::optional<Date> dueDate;
+
+    [[nodiscard]] bool renewed() const noexcept { return result == RenewResult::Renewed; }
+};
+
 class LibraryService {
 public:
     explicit LibraryService(LoanPolicy policy = {}) noexcept : policy_(policy) {}
 
     RegistrationResult registerReader(ReaderId id, std::string fullName, std::string email, Date registrationDate);
-    bool addBook(Book book);
-    bool addCopy(BookCopy copy);
+    CatalogResult addBook(Book book, Date currentDate);
+    CatalogResult addCopy(BookCopy copy);
 
     BorrowReceipt borrowBook(ReaderId readerId, CopyId copyId, Date currentDate);
     ReturnReceipt returnBook(ReaderId readerId, CopyId copyId, Date returnDate,
                              BookCondition condition = BookCondition::Intact);
+    RenewReceipt renewLoan(ReaderId readerId, CopyId copyId, Date currentDate);
 
     [[nodiscard]] const LoanPolicy& policy() const noexcept { return policy_; }
     [[nodiscard]] const ReaderRegistry& readers() const noexcept { return readers_; }

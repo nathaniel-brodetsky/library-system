@@ -39,14 +39,19 @@ int main() {
     const Date today = makeDate(2025, 3, 10);
 
     service.registerReader(1, "Шевченко Тарас", "taras@example.com", today);
-    service.addBook(Book{"978-966-03-4058-5", "Кобзар", "Тарас Шевченко", 1840});
-    service.addCopy(BookCopy{101, "978-966-03-4058-5"});
+    service.addBook(Book{"978-966-03-4058-9", "Кобзар", "Тарас Шевченко", 1840}, today);
+    service.addCopy(BookCopy{101, "978-966-03-4058-9"});
 
     report(service.borrowBook(1, 101, today));
     report(service.borrowBook(1, 101, today));
     report(service.borrowBook(7, 101, today));
 
-    const ReturnReceipt receipt = service.returnBook(1, 101, addDays(today, 25));
+    const RenewReceipt renewal = service.renewLoan(1, 101, addDays(today, 18));
+    if (renewal.dueDate) {
+        std::cout << "Видачу продовжено до " << formatDate(*renewal.dueDate) << '\n';
+    }
+
+    const ReturnReceipt receipt = service.returnBook(1, 101, addDays(today, 46));
     std::cout << "Повернення: прострочено " << receipt.fine.overdueDays << " дн., штраф " << receipt.fine.total()
               << " грн\n";
     return 0;
