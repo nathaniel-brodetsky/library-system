@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(LIBRARY_BUILD_TESTS "Build the GoogleTest suites" ON)
 option(LIBRARY_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(LIBRARY_BUILD_SERVER "Build the HTTP server used for load testing" ON)
 
 add_library(library_core
     src/date.cpp
@@ -37,6 +38,21 @@ add_executable(library_app src/main.cpp)
 target_link_libraries(library_app PRIVATE library::core)
 if(MSVC)
     target_compile_options(library_app PRIVATE /utf-8)
+endif()
+
+if(LIBRARY_BUILD_SERVER)
+    include(FetchContent)
+    FetchContent_Declare(
+        httplib
+        GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
+        GIT_TAG v0.18.7
+        GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(httplib)
+    find_package(Threads REQUIRED)
+
+    add_executable(library_server src/server_main.cpp)
+    target_link_libraries(library_server PRIVATE library::core httplib::httplib Threads::Threads)
 endif()
 
 if(LIBRARY_BUILD_TESTS)
