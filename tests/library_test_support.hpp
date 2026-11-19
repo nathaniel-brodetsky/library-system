@@ -21,7 +21,7 @@ inline constexpr CopyId kFirstSpareCopy = 102;
 inline constexpr CopyId kLastCopy = 110;
 inline constexpr CopyId kMissingCopy = 999;
 
-inline constexpr std::string_view kIsbn = "978-966-03-4058-5";
+inline constexpr std::string_view kIsbn = "978-966-03-4058-9";
 
 class LibraryTest : public ::testing::Test {
 protected:
@@ -30,9 +30,10 @@ protected:
                   RegistrationResult::Registered);
         ASSERT_EQ(service_.registerReader(kOtherReader, "Українка Леся", "lesya@example.com", kRegistrationDate),
                   RegistrationResult::Registered);
-        ASSERT_TRUE(service_.addBook(Book{std::string{kIsbn}, "Кобзар", "Тарас Шевченко", 1840}));
+        ASSERT_EQ(service_.addBook(Book{std::string{kIsbn}, "Кобзар", "Тарас Шевченко", 1840}, kRegistrationDate),
+                  CatalogResult::Added);
         for (CopyId copy = kTargetCopy; copy <= kLastCopy; ++copy) {
-            ASSERT_TRUE(service_.addCopy(BookCopy{copy, std::string{kIsbn}}));
+            ASSERT_EQ(service_.addCopy(BookCopy{copy, std::string{kIsbn}}), CatalogResult::Added);
         }
     }
 

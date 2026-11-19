@@ -20,6 +20,7 @@ public:
     [[nodiscard]] Date dueDate() const noexcept { return dueDate_; }
     [[nodiscard]] std::optional<Date> returnDate() const noexcept { return returnDate_; }
     [[nodiscard]] TransactionStatus status() const noexcept { return status_; }
+    [[nodiscard]] int renewals() const noexcept { return renewals_; }
 
     [[nodiscard]] bool isOpen() const noexcept { return status_ != TransactionStatus::Closed; }
     [[nodiscard]] bool isOverdueOn(Date date) const noexcept { return isOpen() && date > dueDate_; }
@@ -28,6 +29,11 @@ public:
         if (status_ == TransactionStatus::Active) {
             status_ = TransactionStatus::Overdue;
         }
+    }
+
+    void renew(Date newDueDate) noexcept {
+        dueDate_ = newDueDate;
+        ++renewals_;
     }
 
     void close(Date returnDate) noexcept {
@@ -43,6 +49,7 @@ private:
     Date dueDate_;
     std::optional<Date> returnDate_;
     TransactionStatus status_{TransactionStatus::Active};
+    int renewals_{0};
 };
 
 }  // namespace library
