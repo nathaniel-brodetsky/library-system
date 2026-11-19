@@ -15,4 +15,5 @@ Testing/
 *.exe
 *.a
 *.so
-*.dylib
+*.dylibload/results/
+load/results.tar.gz
