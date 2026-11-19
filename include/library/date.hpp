@@ -1,7 +1,9 @@
 #pragma once
 
 #include <chrono>
+#include <optional>
 #include <string>
+#include <string_view>
 
 namespace library {
 
@@ -20,5 +22,6 @@ constexpr int daysBetween(Date from, Date to) {
 }
 
 [[nodiscard]] std::string formatDate(Date date);
+[[nodiscard]] std::optional<Date> parseDate(std::string_view text);
 
 }  // namespace library
